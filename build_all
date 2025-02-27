@@ -1,0 +1,26 @@
+for i in 'quay.io/centos/centos:stream10' 'quay.io/centos/centos:stream9'  \
+		'ubuntu:24.04' 'ubuntu:22.04' 'ubuntu:20.04'
+do
+	docker pull $i
+done
+
+for d in centos-stream10-pys centos-stream10-pys-systemd \
+		centos-stream9-ansible centos-stream9-ansible-systemd \
+		ubuntu2404-ansible ubuntu2404-ansible-systemd ubuntu2204-ansible ubuntu2204-ansible-systemd \
+		ubuntu2004-ansible ubuntu2004-ansible-systemd
+do
+    pushd $d
+    docker build -t ghcr.io/samueljon/ansible-images/$(basename $PWD) --no-cache .
+    # if [[ $(basename $PWD) =~ systemd ]]; then
+    #     ( sudo docker run -v /sys/fs/cgroup:/sys/fs/cgroup:rw -it --rm --privileged samueljon/$(basename $PWD) /bin/bash )
+    # else
+    #     docker run -it --rm samueljon/$(basename $PWD)
+    # fi
+    # [[ $? == 0 ]] && docker push samueljon/$(basename $PWD)
+    popd
+done
+
+docker tag ghcr.io/samueljon/ansible-images/ubuntu2404-ansible ghcr.io/samueljon/ansible-images/ubuntu-ansible
+docker push ghcr.io/samueljon/ansible-images/ubuntu-ansible
+docker tag ghcr.io/samueljon/ansible-images/ubuntu2404-ansible-systemd ghcr.io/samueljon/ansible-images/ubuntu-ansible-systemd
+docker push ghcr.io/samueljon/ansible-images/ubuntu-ansible-systemd
