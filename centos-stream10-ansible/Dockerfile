@@ -1,5 +1,15 @@
 FROM quay.io/centos/centos:stream10
 
+ARG TARGETARCH
+RUN echo "Building for OS: $TARGETARCH"
+
+ARG TARGETOS
+RUN echo "Building for OS: $TARGETOS"
+
+ARG TARGETPLATFORM
+RUN echo "Building for Platform: $TARGETPLATFORM"
+
+
 LABEL maintainer="Samuel Jon Gunnarsson <samuel.jon.gunnarsson@gmail.com>"
 
 RUN \

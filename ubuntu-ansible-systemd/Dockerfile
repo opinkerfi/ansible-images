@@ -2,6 +2,15 @@ FROM ghcr.io/samueljon/ansible-images/ubuntu-ansible
 
 LABEL maintainer="Samuel Jon Gunnarsson <samuel.jon.gunnarsson@gmail.com>"
 
+ARG TARGETARCH
+RUN echo "Building for OS: $TARGETARCH"
+
+ARG TARGETOS
+RUN echo "Building for OS: $TARGETOS"
+
+ARG TARGETPLATFORM
+RUN echo "Building for Platform: $TARGETPLATFORM"
+
 ENV container=docker
 
 ARG DEBIAN_FRONTEND=noninteractive

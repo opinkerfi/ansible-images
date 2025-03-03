@@ -1,26 +1,58 @@
+# This script pulls specified container images, builds custom images from Dockerfiles in specified directories,
+# runs the built images to verify them, and then pushes the verified images to a container registry.
+
+# Pull the base images from the specified repositories.
+# The images include CentOS Stream 10, CentOS Stream 9, and various versions of Ubuntu.
+# The pulled images are:
+# - quay.io/centos/centos:stream10
+# - quay.io/centos/centos:stream9
+# - ubuntu:24.04
+# - ubuntu:22.04
+# - ubuntu:20.04
+
+# For each directory specified, the script performs the following steps:
+# 1. Changes to the directory.
+# 2. Builds a container image using the Dockerfile in the directory.
+#    The image is tagged with the name 'ghcr.io/samueljon/ansible-images/<directory-name>'.
+# 3. If the directory name contains 'systemd', the script runs the built image with additional privileges and mounts.
+#    Otherwise, it runs the image normally.
+# 4. If the image runs successfully, it pushes the image to the container registry.
+# 5. Returns to the previous directory.
+
+# After processing all directories, the script tags and pushes additional images:
+# - Tags 'ubuntu2404-ansible' as 'ubuntu-ansible' and pushes it.
+# - Tags 'ubuntu2404-ansible-systemd' as 'ubuntu-ansible-systemd' and pushes it.
+#!/bin/bash
+
 for i in 'quay.io/centos/centos:stream10' 'quay.io/centos/centos:stream9'  \
-		'ubuntu:24.04' 'ubuntu:22.04' 'ubuntu:20.04'
+    'ubuntu:24.04' 'ubuntu:22.04' 'ubuntu:20.04'
 do
-	docker pull $i
+podman pull $i
 done
 
 for d in centos-stream10-pys centos-stream10-pys-systemd \
-		centos-stream9-ansible centos-stream9-ansible-systemd \
-		ubuntu2404-ansible ubuntu2404-ansible-systemd ubuntu2204-ansible ubuntu2204-ansible-systemd \
-		ubuntu2004-ansible ubuntu2004-ansible-systemd
+    centos-stream9-ansible centos-stream9-ansible-systemd \
+    ubuntu2404-ansible ubuntu2404-ansible-systemd ubuntu2204-ansible ubuntu2204-ansible-systemd \
+    ubuntu2004-ansible ubuntu2004-ansible-systemd
 do
-    pushd $d
-    docker build -t ghcr.io/samueljon/ansible-images/$(basename $PWD) --no-cache .
-    # if [[ $(basename $PWD) =~ systemd ]]; then
-    #     ( sudo docker run -v /sys/fs/cgroup:/sys/fs/cgroup:rw -it --rm --privileged samueljon/$(basename $PWD) /bin/bash )
-    # else
-    #     docker run -it --rm samueljon/$(basename $PWD)
-    # fi
-    # [[ $? == 0 ]] && docker push samueljon/$(basename $PWD)
-    popd
+pushd $d
+podman build -t ghcr.io/samueljon/ansible-images/$(basename $PWD) --no-cache .
+if [[ $(basename $PWD) =~ systemd ]]; then
+( sudo podman run -v /sys/fs/cgroup:/sys/fs/cgroup:rw -it --rm --privileged ghcr.io/samueljon/ansible-images/$(basename $PWD) /bin/bash )
+else
+podman run -it --rm ghcr.io/samueljon/ansible-images/$(basename $PWD)
+fi
+[[ $? == 0 ]] && podman push ghcr.io/samueljon/ansible-images/$(basename $PWD)
+popd
 done
 
-docker tag ghcr.io/samueljon/ansible-images/ubuntu2404-ansible ghcr.io/samueljon/ansible-images/ubuntu-ansible
-docker push ghcr.io/samueljon/ansible-images/ubuntu-ansible
-docker tag ghcr.io/samueljon/ansible-images/ubuntu2404-ansible-systemd ghcr.io/samueljon/ansible-images/ubuntu-ansible-systemd
-docker push ghcr.io/samueljon/ansible-images/ubuntu-ansible-systemd
+podman tag ghcr.io/samueljon/ansible-images/ubuntu2404-ansible ghcr.io/samueljon/ansible-images/ubuntu-ansible
+podman push ghcr.io/samueljon/ansible-images/ubuntu-ansible
+podman tag ghcr.io/samueljon/ansible-images/ubuntu2404-ansible-systemd ghcr.io/samueljon/ansible-images/ubuntu-ansible-systemd
+podman push ghcr.io/samueljon/ansible-images/ubuntu-ansible-systemd
+
+for d in ubuntu2404-ansible ubuntu2404-ansible-systemd
+do
+podman tag ghcr.io/samueljon/ansible-images/$d ghcr.io/samueljon/ansible-images/ubuntu-ansible${d#ubuntu2404-ansible}
+podman push ghcr.io/samueljon/ansible-images/ubuntu-ansible${d#ubuntu2404-ansible}
+done

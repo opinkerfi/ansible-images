@@ -1,0 +1,8 @@
+# ~/.config/containers/podman-farm.yaml
+builder:
+  local:
+    architecture: arm64
+    connection: local
+  remote:
+    architecture: amd64
+    connection: x86_remote

@@ -1,5 +1,14 @@
 FROM ghcr.io/samueljon/ansible-images/ubuntu2004-ansible
 
+ARG TARGETARCH
+RUN echo "Building for OS: $TARGETARCH"
+
+ARG TARGETOS
+RUN echo "Building for OS: $TARGETOS"
+
+ARG TARGETPLATFORM
+RUN echo "Building for Platform: $TARGETPLATFORM"
+
 LABEL maintainer="Samuel Jon Gunnarsson <samuel.jon.gunnarsson@gmail.com>"
 
 ENV container=docker
