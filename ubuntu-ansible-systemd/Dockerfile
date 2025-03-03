@@ -1,6 +1,7 @@
 FROM ghcr.io/samueljon/ansible-images/ubuntu-ansible
 
 LABEL maintainer="Samuel Jon Gunnarsson <samuel.jon.gunnarsson@gmail.com>"
+LABEL org.opencontainers.image.source https://github.com/samueljon/ansible-images
 
 ARG TARGETARCH
 RUN echo "Building for OS: $TARGETARCH"

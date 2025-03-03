@@ -1,16 +1,18 @@
 FROM quay.io/centos/centos:stream10
 
-ARG TARGETARCH
-RUN echo "Building for OS: $TARGETARCH"
+# ARG TARGETARCH
+# RUN echo "Building for OS: $TARGETARCH"
 
-ARG TARGETOS
-RUN echo "Building for OS: $TARGETOS"
+# ARG TARGETOS
+# RUN echo "Building for OS: $TARGETOS"
 
-ARG TARGETPLATFORM
-RUN echo "Building for Platform: $TARGETPLATFORM"
+# ARG TARGETPLATFORM
+# RUN echo "Building for Platform: $TARGETPLATFORM"
 
 
 LABEL maintainer="Samuel Jon Gunnarsson <samuel.jon.gunnarsson@gmail.com>"
+LABEL org.opencontainers.image.source https://github.com/samueljon/ansible-images
+LABEL org.opencontainers.image.description="centos-stream10-ansible for arch: $TARGETARCH os: $TARGETOS platform: $TARGETPLATFORM"
 
 RUN \
     dnf update -y && \

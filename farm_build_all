@@ -3,27 +3,27 @@
 # Define array of base images
 images=(
     'quay.io/centos/centos:stream10'
-    'quay.io/centos/centos:stream9'
-    'ubuntu:24.04'
-    'ubuntu:22.04'
-    'ubuntu:20.04'
+    # 'quay.io/centos/centos:stream9'
+    # 'ubuntu:24.04'
+    # 'ubuntu:22.04'
+    # 'ubuntu:20.04'
 )
 
 # Define array of directories to build
 dirs=(
     centos-stream10-ansible
-    centos-stream10-ansible-systemd
-    centos-stream9-ansible
-    centos-stream9-ansible-systemd
-    ubuntu2404-ansible
-    ubuntu2404-ansible-systemd
-    ubuntu2204-ansible
-    ubuntu2204-ansible-systemd
-    ubuntu2004-ansible
-    ubuntu2004-ansible-systemd
+    # centos-stream10-ansible-systemd
+    # centos-stream9-ansible
+    # centos-stream9-ansible-systemd
+    # ubuntu2404-ansible
+    # ubuntu2404-ansible-systemd
+    # ubuntu2204-ansible
+    # ubuntu2204-ansible-systemd
+    # ubuntu2004-ansible
+    # ubuntu2004-ansible-systemd
 )
 
-# # Pull base images for multi-arch support
+# Pull base images for multi-arch support
 echo "=== Pulling base images ==="
 for i in "${images[@]}"
 do
@@ -36,36 +36,49 @@ for d in "${dirs[@]}"
 do
     pushd $d
 
-    echo "=== Building $d ==="    
+    echo "=== Building $d ==="
     # Build image using Podman Farm
     image_name="ghcr.io/samueljon/ansible-images/$(basename $PWD)"
-    podman build -t $image_name --no-cache .
-    
+    timestamp=$(date +%Y%m%d%H%M%S)
+    unique_tag="${image_name}:${timestamp}"
+
+    #podman build -t $image_name --no-cache .
+    echo "#### Build starts for $image_name ==="
+    # podman farm build -t $image_name --no-cache .
+    # podman farm build -t $image_name .
+    #podman farm build --platforms arm64,amd64 -t $image_name .
+    podman build --arch arm64,amd64 -t $image_name .
+    echo "#### Build ends for $image_name ==="
+
     # Check if the build was successful
     if [[ $? == 0 ]]; then
         echo "=== Pushing Image to Registry for $image_name ==="
-        
+
         # Push the image to the registry using fully qualified name
-        podman push $image_name:latest
-        
-        # echo "=== Creating Multi-Arch Manifest for $image_name ==="
-        
-        # # Create and push multi-arch manifest
-        # manifest_name="$image_name:latest"
-        
-        # # Create manifest
-        # podman manifest create $manifest_name
-        
-        # # Add architecture-specific images to manifest
-        # podman manifest add $manifest_name docker://$image_name:latest
-        
-        # # Push the manifest
-        # podman manifest push --all docker://$manifest_name
-        
-        #echo "=== Multi-arch Manifest Pushed: $manifest_name ==="
+        # podman push -t $image_name
+        podman push -t $unique_tag
+
+        echo "=== Creating Multi-Arch Manifest for $image_name ==="
+
+        # Create and push multi-arch manifest
+        manifest_name="$image_name:latest"
+
+        # Debugging: Print the manifest name
+        echo "Manifest Name: $manifest_name"
+
+        # Create manifest with --tag option
+        podman manifest create --all -t $manifest_name
+
+        # Add architecture-specific images to manifest
+        #podman manifest add $manifest_name docker://$image_name:latest
+
+        # Push the manifest
+        #podman manifest push --all docker://$manifest_name
+
+        echo "=== Multi-arch Manifest Pushed: $manifest_name ==="
     else
         echo "=== Build Failed for $image_name. Skipping Push ==="
     fi
-    
+
     popd
 done

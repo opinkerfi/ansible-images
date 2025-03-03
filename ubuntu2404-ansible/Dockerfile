@@ -10,6 +10,7 @@ ARG TARGETPLATFORM
 RUN echo "Building for Platform: $TARGETPLATFORM"
 
 LABEL maintainer="Samuel Jon Gunnarsson <samuel.jon.gunnarsson@gmail.com>"
+LABEL org.opencontainers.image.source https://github.com/samueljon/ansible-images
 
 RUN \
     apt update -y && \
