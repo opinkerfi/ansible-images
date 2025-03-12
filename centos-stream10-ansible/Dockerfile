@@ -10,8 +10,8 @@ FROM quay.io/centos/centos:stream10
 # RUN echo "Building for Platform: $TARGETPLATFORM"
 
 
-LABEL maintainer="Samuel Jon Gunnarsson <samuel.jon.gunnarsson@gmail.com>"
-LABEL org.opencontainers.image.source https://github.com/samueljon/ansible-images
+LABEL maintainer="Linux Admins at OK<linux-ops@okhysing.is>"
+LABEL org.opencontainers.image.source https://github.com/opinkerfi/ansible-images
 LABEL org.opencontainers.image.description="centos-stream10-ansible for arch: $TARGETARCH os: $TARGETOS platform: $TARGETPLATFORM"
 
 RUN \

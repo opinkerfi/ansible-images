@@ -9,7 +9,7 @@ RUN echo "Building for OS: $TARGETOS"
 ARG TARGETPLATFORM
 RUN echo "Building for Platform: $TARGETPLATFORM"
 
-LABEL maintainer="Samuel Jon Gunnarsson <samuel.jon.gunnarsson@gmail.com>"
+LABEL maintainer="Linux Admins at OK<linux-ops@okhysing.is>"
 
 RUN \
     dnf update -y && \

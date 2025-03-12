@@ -13,7 +13,7 @@
 # For each directory specified, the script performs the following steps:
 # 1. Changes to the directory.
 # 2. Builds a container image using the Dockerfile in the directory.
-#    The image is tagged with the name 'ghcr.io/samueljon/ansible-images/<directory-name>'.
+#    The image is tagged with the name 'ghcr.io/opinkerfi/ansible-images/<directory-name>'.
 # 3. If the directory name contains 'systemd', the script runs the built image with additional privileges and mounts.
 #    Otherwise, it runs the image normally.
 # 4. If the image runs successfully, it pushes the image to the container registry.
@@ -36,23 +36,23 @@ for d in centos-stream10-pys centos-stream10-pys-systemd \
     ubuntu2004-ansible ubuntu2004-ansible-systemd
 do
 pushd $d
-podman build -t ghcr.io/samueljon/ansible-images/$(basename $PWD) --no-cache .
+podman build -t ghcr.io/opinkerfi/ansible-images/$(basename $PWD) --no-cache .
 if [[ $(basename $PWD) =~ systemd ]]; then
-( sudo podman run -v /sys/fs/cgroup:/sys/fs/cgroup:rw -it --rm --privileged ghcr.io/samueljon/ansible-images/$(basename $PWD) /bin/bash )
+( sudo podman run -v /sys/fs/cgroup:/sys/fs/cgroup:rw -it --rm --privileged ghcr.io/opinkerfi/ansible-images/$(basename $PWD) /bin/bash )
 else
-podman run -it --rm ghcr.io/samueljon/ansible-images/$(basename $PWD)
+podman run -it --rm ghcr.io/opinkerfi/ansible-images/$(basename $PWD)
 fi
-[[ $? == 0 ]] && podman push ghcr.io/samueljon/ansible-images/$(basename $PWD)
+[[ $? == 0 ]] && podman push ghcr.io/opinkerfi/ansible-images/$(basename $PWD)
 popd
 done
 
-podman tag ghcr.io/samueljon/ansible-images/ubuntu2404-ansible ghcr.io/samueljon/ansible-images/ubuntu-ansible
-podman push ghcr.io/samueljon/ansible-images/ubuntu-ansible
-podman tag ghcr.io/samueljon/ansible-images/ubuntu2404-ansible-systemd ghcr.io/samueljon/ansible-images/ubuntu-ansible-systemd
-podman push ghcr.io/samueljon/ansible-images/ubuntu-ansible-systemd
+podman tag ghcr.io/opinkerfi/ansible-images/ubuntu2404-ansible ghcr.io/opinkerfi/ansible-images/ubuntu-ansible
+podman push ghcr.io/opinkerfi/ansible-images/ubuntu-ansible
+podman tag ghcr.io/opinkerfi/ansible-images/ubuntu2404-ansible-systemd ghcr.io/opinkerfi/ansible-images/ubuntu-ansible-systemd
+podman push ghcr.io/opinkerfi/ansible-images/ubuntu-ansible-systemd
 
 for d in ubuntu2404-ansible ubuntu2404-ansible-systemd
 do
-podman tag ghcr.io/samueljon/ansible-images/$d ghcr.io/samueljon/ansible-images/ubuntu-ansible${d#ubuntu2404-ansible}
-podman push ghcr.io/samueljon/ansible-images/ubuntu-ansible${d#ubuntu2404-ansible}
+podman tag ghcr.io/opinkerfi/ansible-images/$d ghcr.io/opinkerfi/ansible-images/ubuntu-ansible${d#ubuntu2404-ansible}
+podman push ghcr.io/opinkerfi/ansible-images/ubuntu-ansible${d#ubuntu2404-ansible}
 done
