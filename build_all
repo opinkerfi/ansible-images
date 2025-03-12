@@ -22,7 +22,7 @@
 # After processing all directories, the script tags and pushes additional images:
 # - Tags 'ubuntu2404-ansible' as 'ubuntu-ansible' and pushes it.
 # - Tags 'ubuntu2404-ansible-systemd' as 'ubuntu-ansible-systemd' and pushes it.
-#!/bin/bash
+#!/usr/bin/env bash
 
 for i in 'quay.io/centos/centos:stream10' 'quay.io/centos/centos:stream9'  \
     'ubuntu:24.04' 'ubuntu:22.04' 'ubuntu:20.04'
