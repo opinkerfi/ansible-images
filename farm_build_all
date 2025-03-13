@@ -36,7 +36,7 @@ for d in "${dirs[@]}"; do
 
   echo "=== Building $d ==="
   # Build image using Podman Farm
-  image_name="ghcr.io/samueljon/ansible-images/$(basename $PWD)"
+  image_name="ghcr.io/opinkerfi/ansible-images/$(basename $PWD)"
   timestamp=$(date +%Y%m%d%H%M%S)
   unique_tag="${image_name}:${timestamp}"
 
