@@ -55,18 +55,20 @@ for d in "${dirs[@]}"; do
 
     # Push the image to the registry using fully qualified name
     # podman push -t $image_name
-    podman push -t $unique_tag
+    # podman push $unique_tag # podman format
+    podman push $image_name:latest
 
-    echo "=== Creating Multi-Arch Manifest for $image_name ==="
+    # TODO: enable manifest
+    #echo "=== Creating Multi-Arch Manifest for $image_name ==="
 
     # Create and push multi-arch manifest
-    manifest_name="$image_name:latest"
+    #manifest_name="$image_name:latest"
 
     # Debugging: Print the manifest name
-    echo "Manifest Name: $manifest_name"
+    #echo "Manifest Name: $manifest_name"
 
     # Create manifest with --tag option
-    podman manifest create --all -t $manifest_name
+    #podman manifest create --all -t $manifest_name
 
     # Add architecture-specific images to manifest
     #podman manifest add $manifest_name docker://$image_name:latest
@@ -74,7 +76,7 @@ for d in "${dirs[@]}"; do
     # Push the manifest
     #podman manifest push --all docker://$manifest_name
 
-    echo "=== Multi-arch Manifest Pushed: $manifest_name ==="
+    #echo "=== Multi-arch Manifest Pushed: $manifest_name ==="
   else
     echo "=== Build Failed for $image_name. Skipping Push ==="
   fi
