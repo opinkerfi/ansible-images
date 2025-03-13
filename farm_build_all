@@ -3,24 +3,24 @@
 # Define array of base images
 images=(
   'quay.io/centos/centos:stream10'
-  # 'quay.io/centos/centos:stream9'
-  # 'ubuntu:24.04'
-  # 'ubuntu:22.04'
-  # 'ubuntu:20.04'
+  'quay.io/centos/centos:stream9'
+  'ubuntu:24.04'
+  'ubuntu:22.04'
+  'ubuntu:20.04'
 )
 
 # Define array of directories to build
 dirs=(
   centos-stream10-ansible
-  # centos-stream10-ansible-systemd
-  # centos-stream9-ansible
-  # centos-stream9-ansible-systemd
-  # ubuntu2404-ansible
-  # ubuntu2404-ansible-systemd
-  # ubuntu2204-ansible
-  # ubuntu2204-ansible-systemd
-  # ubuntu2004-ansible
-  # ubuntu2004-ansible-systemd
+  centos-stream10-ansible-systemd
+  centos-stream9-ansible
+  centos-stream9-ansible-systemd
+  ubuntu2404-ansible
+  ubuntu2404-ansible-systemd
+  ubuntu2204-ansible
+  ubuntu2204-ansible-systemd
+  ubuntu2004-ansible
+  ubuntu2004-ansible-systemd
 )
 
 # Pull base images for multi-arch support
